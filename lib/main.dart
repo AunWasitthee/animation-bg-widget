@@ -57,14 +57,17 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _controller1 = VideoPlayerController.asset('assets/Butterfly-209.mp4');
-    _controller1.addListener(() {
-      setState(() {});
-    });
-    _controller1.setLooping(true);
-    _controller1.initialize().then((_) => setState(() {}));
+    _controller1.initialize();
     _controller1.play();
 
-
+    _controller1.addListener(() {
+    if (_controller1.value.isPlaying) return;
+    if (_controller1.value.position >= _controller1.value.duration) {
+    // loop
+    _controller1.seekTo(const Duration(seconds: 0));
+    _controller1.play();
+    }
+    });
     _controller2 = VideoPlayerController.network(
         'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')
       ..initialize().then((_) {
