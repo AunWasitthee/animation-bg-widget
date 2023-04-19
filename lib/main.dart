@@ -50,41 +50,48 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late VideoPlayerController _controller1;
-  late VideoPlayerController _controller2;
+  // late VideoPlayerController _controller2;
+  // bool startedPlaying2 = false;
+  //
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   _controller2 = VideoPlayerController.network(
+  //     'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+  //     // closedCaptionFile: _loadCaptions(),
+  //     // videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+  //   );
+  //   _controller2.addListener(() {
+  //     if (_controller2.value.isPlaying) return;
+  //     if (_controller2.value.position >= _controller2.value.duration) {
+  //       // loop
+  //       _controller2.seekTo(const Duration(seconds: 0));
+  //       _controller2.play();
+  //     }
+  //   });
+  //
+  //
+  //   _controller2.setLooping(true);
+  //   // _controller2.initialize();
+  //   // _controller2.play();
+  // }
+  //
+  // @override
+  // void dispose() {
+  //   _controller2.dispose();
+  //
+  //   super.dispose();
+  // }
+  //
+  //
+  // Future<bool> started2() async {
+  //   await _controller2.initialize();
+  //   await _controller2.play();
+  //   startedPlaying2 = true;
+  //   return true;
+  // }
 
-  @override
-  void initState() {
-    super.initState();
-    _controller1 = VideoPlayerController.asset('assets/Butterfly-209.mp4');
-    _controller1.initialize();
-    _controller1.play();
-
-    _controller1.addListener(() {
-    if (_controller1.value.isPlaying) return;
-    if (_controller1.value.position >= _controller1.value.duration) {
-    // loop
-    _controller1.seekTo(const Duration(seconds: 0));
-    _controller1.play();
-    }
-    });
-    _controller2 = VideoPlayerController.network(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
-    _controller2.setLooping(true);
-    _controller2.play();
-  }
-
-  @override
-  void dispose() {
-    _controller1.dispose();
-    _controller2.dispose();
-
-    super.dispose();
-  }
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -117,115 +124,20 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: AspectRatio(
-                aspectRatio: _controller1.value.aspectRatio,
-                child: Stack(
-                  children: <Widget>[
-                    SizedBox(
-                        width: _controller1.value.size?.width ?? 0,
-                        height: _controller1.value.size?.height ?? 0,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(35),
-                            child: VideoPlayer(_controller1)
-                        )
-                    ),
-
-
-                    Container(
-                      width: _controller1.value.size?.width ?? 0,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("5G Serenade Exclusive Plan",style: TextStyle(fontSize: 20),),
-                          Text("1,389.93 บาท | เดือน",style: TextStyle(fontSize: 20)),
-
-                          ElevatedButton(
-
-                            style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll<Color>(
-                                Colors.green,
-                              ),
-                            ), onPressed: () {  },
-                            child: Text("Buy Now",style: TextStyle(fontSize: 24)),  )
-
-                        ],),
-                      decoration:  BoxDecoration(
-                        color: Colors.white.withAlpha(100),
-                      ),
-                    )
-
-                    // LoginWidget()
-                    // VideoPlayer(_controller),
-                    // _ControlsOverlay(controller: _controller),
-                    // VideoProgressIndicator(_controller, allowScrubbing: true),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: AspectRatio(
-                aspectRatio: _controller2.value.aspectRatio,
-                child: Stack(
-                  children: <Widget>[
-                    SizedBox(
-                        width: _controller2.value.size?.width ?? 0,
-                        height: _controller2.value.size?.height ?? 0,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(35),
-                            child: VideoPlayer(_controller2)
-                        )
-                    ),
-
-
-                    Container(
-                      width: _controller2.value.size?.width ?? 0,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("5G Serenade Exclusive Plan",style: TextStyle(fontSize: 20),),
-                          Text("1,389.93 บาท | เดือน",style: TextStyle(fontSize: 20)),
-
-                          ElevatedButton(
-                            onPressed: () {  },
-                            style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll<Color>(
-                                Colors.green,
-                              ),
-                            ), child: Text("Buy Now",style: TextStyle(fontSize: 24)),  )
-
-                        ],),
-                      decoration:  BoxDecoration(
-                        color: Colors.white.withAlpha(100),
-                      ),
-                    )
-
-                    // LoginWidget()
-                    // VideoPlayer(_controller),
-                    // _ControlsOverlay(controller: _controller),
-                    // VideoProgressIndicator(_controller, allowScrubbing: true),
-                  ],
-                ),
-              ),
-            ),
-
+            buildLocalMP4(),
+            buildUrlMP4(),
             Container(
               padding: const EdgeInsets.all(20),
               child: Stack(
                 children: <Widget>[
-
                   ClipRRect(
                     borderRadius: BorderRadius.circular(35),
-                    child:  Image.asset(
+                    child: Image.asset(
                       "assets/butterfly.gif",
                       height: 225.0,
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.cover,
                     ),
-
                   ),
 
                   Container(
@@ -234,46 +146,41 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("5G Serenade Exclusive Plan",style: TextStyle(fontSize: 20),),
-                        Text("1,389.93 บาท | เดือน",style: TextStyle(fontSize: 20)),
-
+                        Text(
+                          "local file Gif",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Text("Image.asset",
+                            style: TextStyle(fontSize: 20)),
                         ElevatedButton(
-
                           style: const ButtonStyle(
                             backgroundColor: MaterialStatePropertyAll<Color>(
                               Colors.green,
                             ),
-                          ), onPressed: () {  },
-                          child: Text("Buy Now",style: TextStyle(fontSize: 24)),  )
-
-                      ],),
-                    decoration:  BoxDecoration(
+                          ),
+                          onPressed: () {},
+                          child:
+                              Text("Buy Now", style: TextStyle(fontSize: 24)),
+                        )
+                      ],
+                    ),
+                    decoration: BoxDecoration(
                       color: Colors.white.withAlpha(100),
                     ),
                   )
-
-                  // LoginWidget()
-                  // VideoPlayer(_controller),
-                  // _ControlsOverlay(controller: _controller),
-                  // VideoProgressIndicator(_controller, allowScrubbing: true),
                 ],
               ),
             ),
-
-
             Container(
               padding: const EdgeInsets.all(20),
               child: Stack(
                 children: <Widget>[
-
                   ClipRRect(
                     borderRadius: BorderRadius.circular(35),
-                    child:
-                    Container(
+                    child: Container(
                         height: 225.0,
                         width: MediaQuery.of(context).size.width,
                         child: Lottie.asset('assets/lf20_w2Afea.json')),
-
                   ),
 
                   Container(
@@ -282,79 +189,28 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("5G Serenade Exclusive Plan",style: TextStyle(fontSize: 20),),
-                        Text("1,389.93 บาท | เดือน",style: TextStyle(fontSize: 20)),
-
+                        Text(
+                          "local json file",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Text("Lottie",
+                            style: TextStyle(fontSize: 20)),
                         ElevatedButton(
-
                           style: const ButtonStyle(
                             backgroundColor: MaterialStatePropertyAll<Color>(
                               Colors.green,
                             ),
-                          ), onPressed: () {  },
-                          child: Text("Buy Now",style: TextStyle(fontSize: 24)),  )
-
-                      ],),
-                    decoration:  BoxDecoration(
+                          ),
+                          onPressed: () {},
+                          child:
+                              Text("Buy Now", style: TextStyle(fontSize: 24)),
+                        )
+                      ],
+                    ),
+                    decoration: BoxDecoration(
                       color: Colors.white.withAlpha(100),
                     ),
                   )
-
-                  // LoginWidget()
-                  // VideoPlayer(_controller),
-                  // _ControlsOverlay(controller: _controller),
-                  // VideoProgressIndicator(_controller, allowScrubbing: true),
-                ],
-              ),
-            ),
-
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: Stack(
-                children: <Widget>[
-
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(35),
-                    child:
-                    Container(
-                      height: 225.0,
-                      width: MediaQuery.of(context).size.width,
-                      child:
-                      // Load a Lottie file from a remote url
-                      Lottie.network(
-                          'https://raw.githubusercontent.com/xvrh/lottie-flutter/master/example/assets/Mobilo/A.json'),
-                    ),
-
-                  ),
-
-                  Container(
-                    height: 225.0,
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("5G Serenade Exclusive Plan",style: TextStyle(fontSize: 20),),
-                        Text("1,389.93 บาท | เดือน",style: TextStyle(fontSize: 20)),
-
-                        ElevatedButton(
-
-                          style: const ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll<Color>(
-                              Colors.green,
-                            ),
-                          ), onPressed: () {  },
-                          child: Text("Buy Now",style: TextStyle(fontSize: 24)),  )
-
-                      ],),
-                    decoration:  BoxDecoration(
-                      color: Colors.white.withAlpha(100),
-                    ),
-                  )
-
-                  // LoginWidget()
-                  // VideoPlayer(_controller),
-                  // _ControlsOverlay(controller: _controller),
-                  // VideoProgressIndicator(_controller, allowScrubbing: true),
                 ],
               ),
             ),
@@ -362,17 +218,16 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.all(20),
               child: Stack(
                 children: <Widget>[
-
                   ClipRRect(
                     borderRadius: BorderRadius.circular(35),
-                    child:
-                    Container(
+                    child: Container(
                       height: 225.0,
                       width: MediaQuery.of(context).size.width,
                       child:
-                      // Load an animation and its images from a zip file
-                      Lottie.asset('assets/angel.zip'),  ),
-
+                          // Load a Lottie file from a remote url
+                          Lottie.network(
+                              'https://raw.githubusercontent.com/xvrh/lottie-flutter/master/example/assets/Mobilo/A.json'),
+                    ),
                   ),
 
                   Container(
@@ -381,36 +236,265 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("5G Serenade Exclusive Plan",style: TextStyle(fontSize: 20),),
-                        Text("1,389.93 บาท | เดือน",style: TextStyle(fontSize: 20)),
-
+                        Text(
+                          "url json file",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Text("Lottie",
+                            style: TextStyle(fontSize: 20)),
                         ElevatedButton(
-
                           style: const ButtonStyle(
                             backgroundColor: MaterialStatePropertyAll<Color>(
                               Colors.green,
                             ),
-                          ), onPressed: () {  },
-                          child: Text("Buy Now",style: TextStyle(fontSize: 24)),  )
-
-                      ],),
-                    decoration:  BoxDecoration(
+                          ),
+                          onPressed: () {},
+                          child:
+                              Text("Buy Now", style: TextStyle(fontSize: 24)),
+                        )
+                      ],
+                    ),
+                    decoration: BoxDecoration(
                       color: Colors.white.withAlpha(100),
                     ),
                   )
-
-                  // LoginWidget()
-                  // VideoPlayer(_controller),
-                  // _ControlsOverlay(controller: _controller),
-                  // VideoProgressIndicator(_controller, allowScrubbing: true),
                 ],
               ),
             ),
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: Stack(
+                children: <Widget>[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(35),
+                    child: Container(
+                      height: 225.0,
+                      width: MediaQuery.of(context).size.width,
+                      child:
+                          // Load an animation and its images from a zip file
+                          Lottie.asset('assets/angel.zip'),
+                    ),
+                  ),
 
+                  Container(
+                    height: 225.0,
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "local zip",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Text("Lottie",
+                            style: TextStyle(fontSize: 20)),
+                        ElevatedButton(
+                          style: const ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll<Color>(
+                              Colors.green,
+                            ),
+                          ),
+                          onPressed: () {},
+                          child:
+                              Text("Buy Now", style: TextStyle(fontSize: 24)),
+                        )
+                      ],
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withAlpha(100),
+                    ),
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),
 // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class buildLocalMP4 extends StatefulWidget {
+  const buildLocalMP4({Key? key}) : super(key: key);
+
+  @override
+  State<buildLocalMP4> createState() => _buildLocalMP4State();
+}
+
+class _buildLocalMP4State extends State<buildLocalMP4> {
+  late VideoPlayerController _controller1;
+  bool startedPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller1 = VideoPlayerController.asset('assets/Butterfly-209.mp4',
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+
+    _controller1.addListener(() {
+      if (_controller1.value.isPlaying) return;
+      if (_controller1.value.position >= _controller1.value.duration) {
+        // loop
+        _controller1.seekTo(const Duration(seconds: 0));
+        _controller1.play();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller1.dispose();
+
+    super.dispose();
+  }
+
+  Future<bool> started() async {
+    await _controller1.initialize();
+    await _controller1.play();
+    startedPlaying = true;
+    return true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: FutureBuilder<bool>(
+        future: started(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.data ?? false) {
+            return AspectRatio(
+              aspectRatio: _controller1.value.aspectRatio,
+              child: Stack(
+                children: <Widget>[
+                  SizedBox(
+                      width: _controller1.value.size?.width ?? 0,
+                      height: _controller1.value.size?.height ?? 0,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(35),
+                          child: VideoPlayer(_controller1))),
+
+                  Container(
+                    width: _controller1.value.size?.width ?? 0,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Local File MP4",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Text("video_player", style: TextStyle(fontSize: 20)),
+                        ElevatedButton(
+                          style: const ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll<Color>(
+                              Colors.green,
+                            ),
+                          ),
+                          onPressed: () {},
+                          child:
+                              Text("Buy Now", style: TextStyle(fontSize: 24)),
+                        )
+                      ],
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withAlpha(100),
+                    ),
+                  )
+                ],
+              ),
+            );
+          } else {
+            return const Text('waiting for video to load');
+          }
+        },
+      ),
+    );
+  }
+}
+
+class buildUrlMP4 extends StatefulWidget {
+  const buildUrlMP4({Key? key}) : super(key: key);
+
+  @override
+  State<buildUrlMP4> createState() => _buildUrlMP4State();
+}
+
+class _buildUrlMP4State extends State<buildUrlMP4> {
+  late VideoPlayerController _controller2;
+  bool startedPlaying2 = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller2 = VideoPlayerController.network(
+        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true))
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      });
+    _controller2.setLooping(true);
+    _controller2.play();
+
+  }
+
+  @override
+  void dispose() {
+    _controller2.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: AspectRatio(
+        aspectRatio: _controller2.value.aspectRatio,
+        child: Stack(
+          children: <Widget>[
+            SizedBox(
+                width: _controller2.value.size?.width ?? 0,
+                height: _controller2.value.size?.height ?? 0,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(35),
+                    child: VideoPlayer(_controller2))),
+
+            Container(
+              width: _controller2.value.size?.width ?? 0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "URL Path MP4",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  Text("video_player", style: TextStyle(fontSize: 20)),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(
+                        Colors.green,
+                      ),
+                    ),
+                    child: Text("Buy Now", style: TextStyle(fontSize: 24)),
+                  )
+                ],
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white.withAlpha(100),
+              ),
+            )
+
+            // LoginWidget()
+            // VideoPlayer(_controller),
+            // _ControlsOverlay(controller: _controller),
+            // VideoProgressIndicator(_controller, allowScrubbing: true),
+          ],
+        ),
+      ),
     );
   }
 }
